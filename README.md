@@ -11,16 +11,20 @@ Example `chartmuseum.tf` file utilizing this module
 module chartmuseum {
   source = "git::https://github.com/jnbnyc/tfm-chartmuseum?ref=v1.0.0"
 
-  aws_extra_tags           = "${map("kubernetesCluster", "${var.clusterName}",)}"
+  aws_extra_tags           = "${map("kubernetesCluster", "${var.cluster_name}",)}"
   force_destroy_s3_buckets = false
-  kube2iam_enabled = true
-  prefix           = "${var.clusterName}"
+  kube2iam_enabled         = true
+  prefix                   = "${var.cluster_name}"
 }
 
 # use the module output to write the yaml to it's destination
 resource local_file chartmuseum_custom_values {
   content  = "\n${module.chartmuseum.values_yaml}"
   filename = "./generated/${local.workspace}/charts/chartmuseum/custom.yaml"
+}
+
+variable cluster_name {
+  type = "string"
 }
 
 output chartmuseum_values_yaml {
